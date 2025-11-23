@@ -69,6 +69,7 @@
     align-items: center;
     gap: 0.5rem;
     position: relative;
+    text-transform: none;
 }
 
 .task-list-item-description {
@@ -80,6 +81,7 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-transform: none;
 }
 
 .task-list-item-description-empty {
@@ -91,6 +93,7 @@
 .task-list-item-assignee {
     font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.7);
+    text-transform: none;
 }
 
 .task-list-col-deadline {

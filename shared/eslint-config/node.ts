@@ -2,7 +2,9 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 import {baseConfig} from "./base.js"
 
-export const nodeConfig = [
+type FlatConfig = Awaited<ReturnType<typeof tseslint.config>>[number];
+
+export const nodeConfig: FlatConfig[] = [
     ...baseConfig,
     {
         files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
@@ -25,4 +27,3 @@ export const nodeConfig = [
         },
     },
 ]
-

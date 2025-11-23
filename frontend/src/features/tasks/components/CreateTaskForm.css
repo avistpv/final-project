@@ -3,6 +3,7 @@
     max-width: 600px;
     margin: 0 auto;
     animation: slideIn 0.5s ease-out;
+    position: relative;
 }
 
 @keyframes slideIn {

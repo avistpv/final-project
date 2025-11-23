@@ -9,4 +9,3 @@ export default defineConfig({
     minify: "esbuild", // default minifier
   },
 });
-

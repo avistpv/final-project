@@ -25,11 +25,14 @@ export const CreateTaskPage = () => {
 
   return (
     <div className="create-task-page">
-      <BackButton />
-
       {error && <div className="error-message-container">{error}</div>}
 
-      <CreateTaskForm onSubmit={handleSubmit} isLoading={isLoading} />
+      <div className="create-task-content-wrapper">
+        <CreateTaskForm onSubmit={handleSubmit} isLoading={isLoading} />
+        <div className="create-task-back-button">
+          <BackButton />
+        </div>
+      </div>
     </div>
   );
 };

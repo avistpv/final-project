@@ -4,7 +4,9 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import {baseConfig} from './base.js'
 
-export const reactConfig = [
+type FlatConfig = Awaited<ReturnType<typeof tseslint.config>>[number];
+
+export const reactConfig: FlatConfig[] = [
     ...baseConfig,
     {
         files: ['**/*.{ts,tsx,js,jsx}'],

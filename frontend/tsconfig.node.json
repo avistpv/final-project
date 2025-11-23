@@ -11,4 +11,3 @@
   },
   "include": ["vite.config.ts", "eslint.config.ts", "../shared/eslint-config/**/*"]
 }
-
