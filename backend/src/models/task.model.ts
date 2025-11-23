@@ -1,4 +1,4 @@
-import { Optional } from "sequelize";
+import type { Optional } from "sequelize";
 import {
   AllowNull,
   BelongsTo,
@@ -10,6 +10,7 @@ import {
 } from "sequelize-typescript";
 import { User } from "./user.model.js";
 import type { TaskStatus, TaskPriority } from "../types/task.types.js";
+import { TASK_STATUSES, TASK_PRIORITIES } from "../types/task.types.js";
 
 export interface TaskAttributes {
   id: number;
@@ -40,7 +41,7 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> {
   @AllowNull(false)
   @Column({
     type: DataType.ENUM,
-    values: ["todo", "in-progress", "review", "done"],
+    values: [...TASK_STATUSES],
     defaultValue: "todo",
   })
   declare status: TaskStatus;
@@ -48,7 +49,7 @@ export class Task extends Model<TaskAttributes, TaskCreationAttributes> {
   @AllowNull(false)
   @Column({
     type: DataType.ENUM,
-    values: ["low", "medium", "high"],
+    values: [...TASK_PRIORITIES],
     defaultValue: "medium",
   })
   declare priority: TaskPriority;

@@ -11,6 +11,7 @@
     "noUncheckedIndexedAccess": true,
     "strict": true,
     "isolatedModules": true,
+    "noUnusedLocals": false,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true,

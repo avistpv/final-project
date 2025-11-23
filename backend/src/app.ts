@@ -1,4 +1,8 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import taskRoutes from "./routes/task.routes.js";
 import AppError from "./errors.js";
 import morgan from "morgan";
@@ -10,14 +14,19 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
-app.get("/", (req, res) => {
+app.get("/", (_req, res) => {
   res.send("Hello, TypeScript with Express!");
 });
 
 app.use("/tasks", taskRoutes);
 
 app.use(
-  (err: Error | AppError, req: Request, res: Response, _next: NextFunction) => {
+  (
+    err: Error | AppError,
+    _req: Request,
+    res: Response,
+    _next: NextFunction,
+  ) => {
     console.error(err);
 
     if (err instanceof AppError) {

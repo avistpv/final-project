@@ -1,70 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { tasksApi } from "../api";
 import type { Task, TaskStatus } from "../types";
 import { KanbanBoard } from "../components/KanbanBoard";
 import { TaskListView } from "../components/TaskListView";
+import { LoadingState } from "../components/LoadingState";
+import { ErrorState } from "../components/ErrorState";
+import { EmptyState } from "../components/EmptyState";
+import { useTasks, useTaskFilter } from "../hooks";
+import { tasksApi } from "../api";
 import "./TaskBoardPage.css";
 
 type ViewMode = "kanban" | "list";
-type SortOrder = "a-z" | "z-a" | null;
 
 export const TaskBoardPage = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { tasks, setTasks, loading, error, refetch } = useTasks();
+  const { searchQuery, setSearchQuery, sortOrder, toggleSort, filteredTasks } =
+    useTaskFilter(tasks);
   const [viewMode, setViewMode] = useState<ViewMode>("kanban");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortOrder, setSortOrder] = useState<SortOrder>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await tasksApi.getAll();
-        setTasks(data);
-        setFilteredTasks(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load tasks");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTasks();
-  }, []);
-
-  useEffect(() => {
-    let filtered = [...tasks];
-
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (task) =>
-          task.title.toLowerCase().includes(query) ||
-          task.description?.toLowerCase().includes(query),
-      );
-    }
-
-    // Apply sorting
-    if (sortOrder) {
-      filtered.sort((a, b) => {
-        const titleA = a.title.toLowerCase();
-        const titleB = b.title.toLowerCase();
-        if (sortOrder === "a-z") {
-          return titleA.localeCompare(titleB);
-        } else {
-          return titleB.localeCompare(titleA);
-        }
-      });
-    }
-
-    setFilteredTasks(filtered);
-  }, [tasks, searchQuery, sortOrder]);
 
   const handleTaskClick = (id: number) => {
     navigate(`/tasks/${id}`);
@@ -73,59 +26,46 @@ export const TaskBoardPage = () => {
   const handleTaskMove = async (taskId: number, newStatus: TaskStatus) => {
     const task = tasks.find((t) => t.id === taskId);
 
-    // Don't do anything if status hasn't changed
     if (!task || task.status === newStatus) {
       return;
     }
 
-    // Optimistically update the UI immediately
     const previousTasks = tasks;
     setTasks((prevTasks) =>
       prevTasks.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)),
     );
 
     try {
-      // Then sync with the server
       await tasksApi.update(taskId, { status: newStatus });
-    } catch (err) {
-      // Revert on error
+    } catch {
       setTasks(previousTasks);
-      setError(err instanceof Error ? err.message : "Failed to update task");
     }
   };
 
   const handleTasksReorder = (reorderedTasks: Task[]) => {
-    // Create a map of new positions
     const newOrderMap = new Map(
       reorderedTasks.map((task, index) => [task.id, index]),
     );
 
-    // Update tasks array to match the new order
     const reorderedAllTasks = [...tasks].sort((a, b) => {
       const aIndex = newOrderMap.get(a.id);
       const bIndex = newOrderMap.get(b.id);
 
-      // If both tasks are in the reordered list, use their new order
       if (aIndex !== undefined && bIndex !== undefined) {
         return aIndex - bIndex;
       }
-      // If only one is in the list, put it in its new position
       if (aIndex !== undefined) return -1;
       if (bIndex !== undefined) return 1;
-      // If neither is in the list, maintain original order
       return 0;
     });
 
     setTasks(reorderedAllTasks);
-    setFilteredTasks(reorderedTasks);
   };
 
   if (loading) {
     return (
       <div className="tasks-page">
-        <div className="loading-state">
-          <p>Loading...</p>
-        </div>
+        <LoadingState />
       </div>
     );
   }
@@ -133,15 +73,7 @@ export const TaskBoardPage = () => {
   if (error) {
     return (
       <div className="tasks-page">
-        <div className="error-state">
-          <p>Error: {error}</p>
-          <button
-            className="btn btn-primary"
-            onClick={() => window.location.reload()}
-          >
-            Retry
-          </button>
-        </div>
+        <ErrorState error={error} onRetry={refetch} />
       </div>
     );
   }
@@ -185,15 +117,7 @@ export const TaskBoardPage = () => {
           </div>
           <button
             className={`sort-btn ${sortOrder ? "active" : ""} ${sortOrder === "z-a" ? "sort-desc" : ""}`}
-            onClick={() => {
-              if (sortOrder === null) {
-                setSortOrder("a-z");
-              } else if (sortOrder === "a-z") {
-                setSortOrder("z-a");
-              } else {
-                setSortOrder(null);
-              }
-            }}
+            onClick={toggleSort}
             aria-label="Sort"
             title={
               sortOrder === "a-z"
@@ -366,19 +290,8 @@ export const TaskBoardPage = () => {
         </div>
       </div>
 
-      {filteredTasks.length === 0 && !loading ? (
-        <div className="empty-state">
-          <p>No tasks yet</p>
-          <p className="empty-state-subtitle">
-            Create your first task to get started
-          </p>
-          <button
-            className="btn btn-primary"
-            onClick={() => navigate("/tasks/create")}
-          >
-            Create Task
-          </button>
-        </div>
+      {filteredTasks.length === 0 ? (
+        <EmptyState onAction={() => navigate("/tasks/create")} />
       ) : (
         <>
           {viewMode === "kanban" ? (

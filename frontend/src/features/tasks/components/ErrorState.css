@@ -1,0 +1,20 @@
+.error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    color: #ff6b6b;
+    font-size: 1.2rem;
+}
+
+.error-state p {
+    margin: 0;
+}
+
+@media (prefers-color-scheme: light) {
+    .error-state {
+        color: #dc2626;
+    }
+}
+

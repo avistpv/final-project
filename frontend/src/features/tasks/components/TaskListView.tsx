@@ -5,6 +5,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  closestCenter,
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
@@ -54,7 +55,7 @@ const TaskListItem = ({ task, onTaskClick }: TaskListItemProps) => {
       style={style}
       {...attributes}
       {...listeners}
-      onClick={() => onTaskClick(task.id)}
+      onClick={() => !isDragging && onTaskClick(task.id)}
       className={`task-list-item ${isDragging ? "dragging" : ""}`}
     >
       <div className="task-list-col task-list-col-name">
@@ -107,7 +108,7 @@ export const TaskListView = ({
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
-        distance: 8,
+        distance: 5,
       },
     }),
   );
@@ -179,6 +180,7 @@ export const TaskListView = ({
   return (
     <DndContext
       sensors={sensors}
+      collisionDetection={closestCenter}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >

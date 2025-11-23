@@ -2,13 +2,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import type { CreateTaskInput } from "../types";
+import { TASK_STATUSES, TASK_PRIORITIES } from "../types";
+import { Field } from "./Field";
 import "./CreateTaskForm.css";
 
 const taskSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
-  status: z.enum(["todo", "in-progress", "review", "done"]).optional(),
-  priority: z.enum(["low", "medium", "high"]).optional(),
+  status: z.enum(TASK_STATUSES as unknown as [string, ...string[]]).optional(),
+  priority: z
+    .enum(TASK_PRIORITIES as unknown as [string, ...string[]])
+    .optional(),
   deadline: z.string().optional(),
 });
 
@@ -33,92 +37,60 @@ export const CreateTaskForm = ({
     defaultValues: {
       status: "todo",
       priority: "medium",
-      userId: 1,
     },
   });
 
   const onFormSubmit = async (data: TaskFormData) => {
-    await onSubmit({ ...data, userId: 1 });
+    await onSubmit({ ...data, userId: 1 } as CreateTaskInput);
   };
 
   return (
     <div className="form-section">
       <h2>Create New Task</h2>
       <form onSubmit={handleSubmit(onFormSubmit)} className="task-form">
-        <div className="form-group">
-          <label htmlFor="title">Task Name *</label>
+        <Field label="Task Name *" error={errors.title?.message}>
           <input
             id="title"
             type="text"
             {...register("title")}
             placeholder="Enter task name"
-            className={errors.title ? "error" : ""}
           />
-          {errors.title && (
-            <span className="error-message">{errors.title.message}</span>
-          )}
-        </div>
+        </Field>
 
-        <div className="form-group">
-          <label htmlFor="description">Description</label>
+        <Field label="Description" error={errors.description?.message}>
           <textarea
             id="description"
             {...register("description")}
             placeholder="Enter task description"
-            className={errors.description ? "error" : ""}
           />
-          {errors.description && (
-            <span className="error-message">{errors.description.message}</span>
-          )}
-        </div>
+        </Field>
 
         <div className="form-row">
-          <div className="form-group">
-            <label htmlFor="status">Status</label>
-            <select
-              id="status"
-              {...register("status")}
-              className={errors.status ? "error" : ""}
-            >
+          <Field label="Status" error={errors.status?.message}>
+            <select id="status" {...register("status")}>
               <option value="todo">To Do</option>
               <option value="in-progress">In Progress</option>
               <option value="review">Review</option>
               <option value="done">Done</option>
             </select>
-            {errors.status && (
-              <span className="error-message">{errors.status.message}</span>
-            )}
-          </div>
+          </Field>
 
-          <div className="form-group">
-            <label htmlFor="priority">Priority</label>
-            <select
-              id="priority"
-              {...register("priority")}
-              className={errors.priority ? "error" : ""}
-            >
+          <Field label="Priority" error={errors.priority?.message}>
+            <select id="priority" {...register("priority")}>
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
-            {errors.priority && (
-              <span className="error-message">{errors.priority.message}</span>
-            )}
-          </div>
+          </Field>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="deadline">Deadline</label>
+        <Field label="Deadline" error={errors.deadline?.message}>
           <input
             id="deadline"
             type="datetime-local"
             {...register("deadline")}
-            className={errors.deadline ? "error" : ""}
           />
-          {errors.deadline && (
-            <span className="error-message">{errors.deadline.message}</span>
-          )}
-        </div>
+        </Field>
 
         <button
           type="submit"

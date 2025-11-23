@@ -1,8 +1,8 @@
-import { Op, WhereOptions } from "sequelize";
+import { Op, type WhereOptions } from "sequelize";
 import AppError from "../errors.js";
-import { Task, TaskAttributes } from "../models/task.model.js";
+import { Task, type TaskAttributes } from "../models/task.model.js";
 import type { TaskStatus, TaskPriority } from "../types/task.types.js";
-import {
+import type {
   TaskFilters,
   TaskCreateInput,
   TaskUpdateInput,

@@ -1,6 +1,6 @@
-import { nodeConfig } from '../shared/eslint-config';
-import { join } from 'path';
-import { fileURLToPath } from 'url';
+import {nodeConfig} from '../shared/eslint-config';
+import {join} from 'path';
+import {fileURLToPath} from 'url';
 import tseslint from 'typescript-eslint';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));

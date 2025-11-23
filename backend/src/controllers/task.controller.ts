@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 import {
   getTasks,
   getTaskById,
@@ -7,13 +7,14 @@ import {
   deleteTask,
 } from "../services/task.service.js";
 import AppError from "../errors.js";
-import {
+import type {
   TaskFilters,
   TaskRequestBody,
   TaskCreateInput,
   TaskUpdateInput,
+  TaskStatus,
+  TaskPriority,
 } from "../types/task.types.js";
-import { TaskStatus, TaskPriority } from "../types/task.types.js";
 
 function validateTaskId(
   id: string | undefined,

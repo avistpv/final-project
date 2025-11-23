@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import request from "supertest";
 import app from "../src/app.js";
 import { Task } from "../src/models/task.model.js";
@@ -7,25 +8,27 @@ describe("Tasks API", () => {
   let testUser: User;
 
   beforeAll(async () => {
-    testUser = await User.findOrCreate({
+    const [user] = await User.findOrCreate({
       where: { email: "test@example.com" },
       defaults: {
         name: "Test User",
         email: "test@example.com",
       },
-    }).then(([user]) => user);
+    });
+    testUser = user;
   });
 
   beforeEach(async () => {
     await Task.destroy({ where: {}, force: true });
     // Ensure user exists
-    testUser = await User.findOrCreate({
+    const [user] = await User.findOrCreate({
       where: { email: "test@example.com" },
       defaults: {
         name: "Test User",
         email: "test@example.com",
       },
-    }).then(([user]) => user);
+    });
+    testUser = user;
   });
 
   describe("GET /tasks", () => {

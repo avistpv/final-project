@@ -1,4 +1,9 @@
-import { NextFunction, Request, Response, Router } from "express";
+import {
+  type NextFunction,
+  type Request,
+  type Response,
+  Router,
+} from "express";
 import { z } from "zod";
 import {
   getAllTasks,
@@ -8,11 +13,16 @@ import {
   deleteTaskHandler,
 } from "../controllers/task.controller.js";
 import AppError from "../errors.js";
+import { TASK_STATUSES, TASK_PRIORITIES } from "../types/task.types.js";
 
 const router = Router();
 
-const taskStatusEnum = z.enum(["todo", "in-progress", "review", "done"]);
-const taskPriorityEnum = z.enum(["low", "medium", "high"]);
+const taskStatusEnum = z.enum(
+  TASK_STATUSES as unknown as [string, ...string[]],
+);
+const taskPriorityEnum = z.enum(
+  TASK_PRIORITIES as unknown as [string, ...string[]],
+);
 
 const queryParamsSchema = z.object({
   createdAt: z.string().optional(),
@@ -41,7 +51,7 @@ function validateZodSchema(
   errorMessage?: string,
   useQuery = false,
 ) {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, _res: Response, next: NextFunction) => {
     try {
       const data = useQuery ? req.query : req.body;
       schema.parse(data);
@@ -49,8 +59,7 @@ function validateZodSchema(
     } catch (error) {
       if (error instanceof z.ZodError) {
         const message =
-          errorMessage ||
-          error.issues.map((e: z.ZodIssue) => e.message).join(", ");
+          errorMessage || error.issues.map((e) => e.message).join(", ");
         return next(new AppError(message, 400));
       }
       next(error);

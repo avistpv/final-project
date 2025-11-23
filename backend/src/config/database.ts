@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Dialect } from "sequelize";
+import type { Dialect } from "sequelize";
 import { Sequelize } from "sequelize-typescript";
 import { Task } from "../models/task.model.js";
 import { User } from "../models/user.model.js";

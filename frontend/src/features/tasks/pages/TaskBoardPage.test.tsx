@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
-import { BrowserRouter } from "react-router-dom";
+import { screen, waitFor } from "@testing-library/react";
 import { TaskBoardPage } from "./TaskBoardPage";
 import { tasksApi } from "../api";
-import type { Task } from "../types";
+import { renderWithRouter, mockTasks } from "../test-utils";
 
 vi.mock("../api");
 
@@ -15,40 +14,6 @@ vi.mock("react-router-dom", async () => {
     useNavigate: () => mockNavigate,
   };
 });
-
-const renderWithRouter = (component: React.ReactElement) => {
-  return render(<BrowserRouter>{component}</BrowserRouter>);
-};
-
-const mockTasks: Task[] = [
-  {
-    id: 1,
-    title: "Test Task 1",
-    description: "Test description 1",
-    status: "todo",
-    priority: "high",
-    userId: 1,
-    createdAt: "2024-01-01T00:00:00Z",
-  },
-  {
-    id: 2,
-    title: "Test Task 2",
-    description: "Test description 2",
-    status: "in-progress",
-    priority: "medium",
-    userId: 1,
-    createdAt: "2024-01-02T00:00:00Z",
-  },
-  {
-    id: 3,
-    title: "Completed Task",
-    description: "Completed description",
-    status: "done",
-    priority: "low",
-    userId: 1,
-    createdAt: "2024-01-03T00:00:00Z",
-  },
-];
 
 describe("TaskBoardPage", () => {
   beforeEach(() => {

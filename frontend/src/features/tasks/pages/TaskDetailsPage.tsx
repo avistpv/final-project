@@ -1,47 +1,20 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { tasksApi } from "../api";
-import type { Task } from "../types";
 import { TASK_STATUS_LABELS } from "../types";
 import { BackButton } from "../../../shared/components/BackButton";
+import { LoadingState } from "../components/LoadingState";
+import { ErrorState } from "../components/ErrorState";
+import { useTask } from "../hooks";
 import "./TaskDetailsPage.css";
 
 export const TaskDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [task, setTask] = useState<Task | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) {
-      setError("Task ID is required");
-      setLoading(false);
-      return;
-    }
-
-    const fetchTask = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await tasksApi.getById(id);
-        setTask(data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load task");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTask();
-  }, [id]);
+  const { task, loading, error } = useTask(id);
 
   if (loading) {
     return (
       <div className="task-details-page">
         <BackButton />
-        <div className="loading-state">
-          <p>Loading...</p>
-        </div>
+        <LoadingState />
       </div>
     );
   }
@@ -50,9 +23,7 @@ export const TaskDetailsPage = () => {
     return (
       <div className="task-details-page">
         <BackButton />
-        <div className="error-state">
-          <p>Error: {error}</p>
-        </div>
+        <ErrorState error={error} />
       </div>
     );
   }

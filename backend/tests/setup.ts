@@ -1,3 +1,4 @@
+/// <reference types="jest" />
 import db from "../src/config/database.js";
 import { Task } from "../src/models/task.model.js";
 import { User } from "../src/models/user.model.js";

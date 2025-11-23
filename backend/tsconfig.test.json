@@ -4,7 +4,8 @@
     "types": ["node", "jest"],
     "rootDir": ".",
     "declaration": false,
-    "outDir": "./dist-test"
+    "outDir": "./dist-test",
+    "esModuleInterop": true
   },
   "include": ["tests/**/*"],
   "references": []
