@@ -2,7 +2,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import type { CreateTaskInput } from "../types";
-import { TASK_STATUSES, TASK_PRIORITIES } from "../types";
+import {
+  TASK_STATUSES,
+  TASK_PRIORITIES,
+  TASK_STATUS_LABELS,
+  TASK_PRIORITY_LABELS,
+} from "../types";
 import { Field } from "./Field";
 import "./CreateTaskForm.css";
 
@@ -68,18 +73,21 @@ export const CreateTaskForm = ({
         <div className="form-row">
           <Field label="Status" error={errors.status?.message}>
             <select id="status" {...register("status")}>
-              <option value="todo">To Do</option>
-              <option value="in-progress">In Progress</option>
-              <option value="review">Review</option>
-              <option value="done">Done</option>
+              {Object.entries(TASK_STATUS_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </Field>
 
           <Field label="Priority" error={errors.priority?.message}>
             <select id="priority" {...register("priority")}>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
+              {Object.entries(TASK_PRIORITY_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
             </select>
           </Field>
         </div>

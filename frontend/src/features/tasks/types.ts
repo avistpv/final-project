@@ -36,3 +36,9 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   review: "Review",
   done: "Done",
 };
+
+export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+};
