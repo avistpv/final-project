@@ -6,9 +6,21 @@
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
+    "dev": "npm-run-all -p dev:backend dev:frontend",
     "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install && cd ../shared/eslint-config && npm install",
     "lint:frontend": "cd frontend && npm run lint",
     "lint:backend": "cd backend && npm run lint",
+    "lint": "npm-run-all lint:frontend lint:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && npm test",
+    "test": "npm-run-all test:backend test:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build": "npm-run-all -s build:backend build:frontend",
     "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "npm-run-all": "^4.1.5"
   }
 }

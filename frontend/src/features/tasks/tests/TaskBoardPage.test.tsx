@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, waitFor } from "@testing-library/react";
-import { TaskBoardPage } from "./TaskBoardPage";
+import { TaskBoardPage } from "../pages/TaskBoardPage";
 import { tasksApi } from "../api";
 import { renderWithRouter, mockTasks } from "../test-utils";
 

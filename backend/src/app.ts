@@ -27,12 +27,14 @@ app.use(
     res: Response,
     _next: NextFunction,
   ) => {
-    console.error(err);
-
     if (err instanceof AppError) {
+      if (process.env.NODE_ENV !== "test") {
+        console.error(err);
+      }
       return res.status(err.statusCode).send(err.message);
     }
 
+    console.error(err);
     res.status(500).send("Internal server error");
   },
 );
