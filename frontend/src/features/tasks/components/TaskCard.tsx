@@ -7,31 +7,38 @@ import "./TaskCard.css";
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
+  draggable?: boolean;
 }
 
-export const TaskCard = ({ task, onClick }: TaskCardProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: task.id });
+export const TaskCard = ({
+  task,
+  onClick,
+  draggable = true,
+}: TaskCardProps) => {
+  const sortable = useSortable({ id: task.id, disabled: !draggable });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition: isDragging ? "none" : transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
+  const attributes = draggable ? sortable.attributes : {};
+  const listeners = draggable ? sortable.listeners : {};
+  const setNodeRef = sortable.setNodeRef;
+  const transform = sortable.transform;
+  const transition = sortable.transition;
+  const isDragging = draggable ? sortable.isDragging : false;
+
+  const style = draggable
+    ? {
+        transform: CSS.Transform.toString(transform),
+        transition: isDragging ? "none" : transition,
+        opacity: isDragging ? 0.5 : 1,
+      }
+    : undefined;
 
   return (
     <div
-      ref={setNodeRef}
+      ref={draggable ? setNodeRef : undefined}
       style={style}
-      {...attributes}
-      {...listeners}
-      className={`task-card ${isDragging ? "dragging" : ""}`}
+      {...(draggable ? attributes : {})}
+      {...(draggable ? listeners : {})}
+      className={`task-card ${draggable && isDragging ? "dragging" : ""}`}
       onClick={onClick}
     >
       <div className="task-card-header">

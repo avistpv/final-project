@@ -27,7 +27,11 @@ export const TaskColumn = ({ status, tasks, onTaskClick }: TaskColumnProps) => {
         <h2 className="task-column-title">{TASK_STATUS_LABELS[status]}</h2>
         <span className="task-column-count">{tasks.length}</span>
       </div>
-      <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
+      <SortableContext
+        id={status}
+        items={taskIds}
+        strategy={verticalListSortingStrategy}
+      >
         <div ref={setNodeRef} className="task-column-content">
           {tasks.length === 0 ? (
             <div className="task-column-empty">No tasks</div>

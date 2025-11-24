@@ -7,6 +7,7 @@ import {
   useSensors,
   type DragEndEvent,
   type DragStartEvent,
+  closestCenter,
 } from "@dnd-kit/core";
 import type { Task, TaskStatus } from "../types";
 import { TASK_STATUSES } from "../types";
@@ -87,6 +88,7 @@ export const KanbanBoard = ({
       sensors={sensors}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      collisionDetection={closestCenter}
     >
       <div className="kanban-board">
         {TASK_STATUSES.map((status) => (
@@ -104,7 +106,7 @@ export const KanbanBoard = ({
           easing: "ease",
         }}
       >
-        {activeTask ? <TaskCard task={activeTask} /> : null}
+        {activeTask ? <TaskCard task={activeTask} draggable={false} /> : null}
       </DragOverlay>
     </DndContext>
   );
